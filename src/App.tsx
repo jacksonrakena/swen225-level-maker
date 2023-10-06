@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { SketchPicker } from "react-color";
 
 interface Tile {
   tileType: TileType;
@@ -23,6 +24,7 @@ function App() {
   ]);
   const [editor, setEditor] = useState("");
   const [selectedBrush, setSelectedBrush] = useState<TileType>("FreeTile");
+  const [color, setColor] = useState("#000000");
   const [selectedTile, setSelectedTile] = useState<{
     x: number;
     y: number;
@@ -31,6 +33,15 @@ function App() {
     <div style={{ all: "unset" }}>
       <div>
         Size: {level[0].length}x{level.length}
+      </div>
+      <div>
+        <SketchPicker
+          color={color}
+          onChangeComplete={(c) => {
+            setColor(c.hex);
+            console.log(c.hex);
+          }}
+        />
       </div>
       <div>
         <select
@@ -50,15 +61,16 @@ function App() {
             {row.map((cell) => (
               <td
                 style={{
-                  backgroundColor:
-                    selectedTile?.x == cell.x && selectedTile?.y == cell.y
-                      ? "red"
-                      : "unset",
+                  backgroundColor: cell.colour?.toString(16) ?? "unset",
                 }}
                 onClick={() => {
                   setLevel((l) => {
                     let n = l.map((d) => d.map((e) => e));
                     n[cell?.y!][cell?.x!].tileType = selectedBrush;
+                    n[cell?.y!][cell?.x!].colour = parseInt(
+                      color.replace("#", ""),
+                      16
+                    );
                     return n;
                   });
                 }}
