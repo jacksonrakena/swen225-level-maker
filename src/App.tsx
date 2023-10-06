@@ -61,7 +61,10 @@ function App() {
             {row.map((cell) => (
               <td
                 style={{
-                  backgroundColor: cell.colour?.toString(16) ?? "unset",
+                  backgroundColor: (() => {
+                    if (!cell.colour) return "unset";
+                    return "#" + cell.colour?.toString(16);
+                  })(),
                 }}
                 onClick={() => {
                   setLevel((l) => {
@@ -104,7 +107,13 @@ function App() {
         Add row
       </button>
       <br />
-      <code>{JSON.stringify(level)}</code>
+      <code>
+        {JSON.stringify({
+          mapId: "level1",
+          position: { x: 5, y: 5 },
+          tiles: level,
+        })}
+      </code>
       <br />
       <textarea
         onChange={(e) => {
@@ -125,7 +134,7 @@ function App() {
       </button>
       <button
         onClick={() => {
-          setLevel(JSON.parse(editor));
+          setLevel(JSON.parse(editor).tiles);
         }}
       >
         Load
